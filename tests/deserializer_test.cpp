@@ -8,12 +8,13 @@
 #include <sensor_msgs/Image.h>
 #include <std_msgs/Int16MultiArray.h>
 
+#include <ros_introspection_test/MotorStatus.h>
+
 using namespace ros::message_traits;
 using namespace RosIntrospection;
 
 
 TEST(Deserialize, JointState)
-
 {
   RosIntrospection::Parser parser;
 
@@ -452,6 +453,43 @@ TEST( Deserialize, SensorImage)
                                             &flat_container,100)
         );
 
+}
+
+TEST(Deserialize, MotorStateCustom)
+{
+    using MsgType = ros_introspection_test::MotorStatus;
+
+    MsgType msg;
+
+    for (int i=0; i<3; i++)
+    {
+      //  msg.position.push_back(0xFFFFFFFF);
+     //   msg.speed.push_back(0xFFFFFFFF);
+     //   msg.torque.push_back(0xFFFFFFFF);
+     //   msg.drivertemperature.push_back(0xFFFF);
+     //   msg.motortemperature.push_back( 0xFFFF);
+     //   msg.error.push_back(0xFF);
+    }
+
+    RosIntrospection::Parser parser;
+
+    parser.registerMessageDefinition( "motor_status",
+          ROSType(DataType<MsgType>::value()),
+          Definition<MsgType>::value());
+
+    std::vector<uint8_t> buffer( ros::serialization::serializationLength(msg) );
+    ros::serialization::OStream stream(buffer.data(), buffer.size());
+    ros::serialization::Serializer<MsgType>::write(stream, msg);
+
+    FlatMessage flat_container;
+
+    EXPECT_NO_THROW(
+          parser.deserializeIntoFlatContainer("motor_status",
+                                              absl::Span<uint8_t>(buffer),
+                                              &flat_container,100)
+          );
+
+    EXPECT_EQ( flat_container.value.size(), 3*6 );
 }
 
 

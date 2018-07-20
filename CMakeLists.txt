@@ -5,16 +5,26 @@ find_package(Boost REQUIRED COMPONENTS regex)
 
 
 find_package(catkin REQUIRED COMPONENTS 
-   ros_type_introspection 
-   rosbag 
-   rosbag_storage 
-   topic_tools 
-   sensor_msgs
-   geometry_msgs
-)
+    ros_type_introspection
+    rosbag
+    rosbag_storage
+    topic_tools
+    sensor_msgs
+    geometry_msgs
+    message_generation
+    genmsg
+    )
 
 # Build flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
+
+add_message_files( FILES
+    MotorStatus.msg
+    )
+
+generate_messages( DEPENDENCIES
+    std_msgs
+    )
 
 ###################################
 ## catkin specific configuration ##
@@ -26,17 +36,18 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS
-   LIBRARIES 
-   CATKIN_DEPENDS 
-	   ros_type_introspection 
-	   rosbag 
-	   rosbag_storage 
-	   topic_tools 
-	   sensor_msgs
-	   geometry_msgs
-   DEPENDS 
-)
+    INCLUDE_DIRS
+    LIBRARIES
+    CATKIN_DEPENDS
+    ros_type_introspection
+    rosbag
+    rosbag_storage
+    topic_tools
+    sensor_msgs
+    geometry_msgs
+    message_runtime
+    DEPENDS
+    )
 
 ###########
 ## Build ##
@@ -47,7 +58,7 @@ catkin_package(
 
 include_directories(
     ${catkin_INCLUDE_DIRS}
-)
+    )
 
 find_package(benchmark CONFIG)
 if (benchmark_FOUND)
@@ -58,10 +69,10 @@ if (benchmark_FOUND)
         ${catkin_EXPORTED_TARGETS})
 
     target_link_libraries(ros_introspection_benchmark
-     ${catkin_LIBRARIES}
-      benchmark
-      pthread
-    )
+        ${catkin_LIBRARIES}
+        benchmark
+        pthread
+        )
 
 endif(benchmark_FOUND)
 
@@ -85,15 +96,15 @@ target_link_libraries(subscribe_example ${catkin_LIBRARIES})
 #############
 if(CATKIN_ENABLE_TESTING)
 
- catkin_add_gtest(ros_introspection_test
-     tests/parser_test.cpp
-     tests/deserializer_test.cpp
-     tests/renamer_test.cpp
-     )
+    catkin_add_gtest(ros_introspection_test
+        tests/parser_test.cpp
+        tests/deserializer_test.cpp
+        tests/renamer_test.cpp
+        )
 
- target_link_libraries(ros_introspection_test
-   ${catkin_LIBRARIES} 
-   boost_regex
-   )
+    target_link_libraries(ros_introspection_test
+        ${catkin_LIBRARIES}
+        boost_regex
+        )
 
 endif()
