@@ -463,12 +463,12 @@ TEST(Deserialize, MotorStateCustom)
 
     for (int i=0; i<3; i++)
     {
-      //  msg.position.push_back(0xFFFFFFFF);
-     //   msg.speed.push_back(0xFFFFFFFF);
-     //   msg.torque.push_back(0xFFFFFFFF);
-     //   msg.drivertemperature.push_back(0xFFFF);
-     //   msg.motortemperature.push_back( 0xFFFF);
-     //   msg.error.push_back(0xFF);
+        msg.position.push_back(0xFFFFFFFF);
+        msg.speed.push_back(0xFFFFFFFF);
+        msg.torque.push_back(0xFFFFFFFF);
+        msg.drivertemperature.push_back(0xFFFF);
+        msg.motortemperature.push_back( 0xFFFF);
+        msg.error.push_back(0xFF);
     }
 
     RosIntrospection::Parser parser;
@@ -489,7 +489,7 @@ TEST(Deserialize, MotorStateCustom)
                                               &flat_container,100)
           );
 
-    EXPECT_EQ( flat_container.value.size(), 3*6 );
+    EXPECT_EQ( flat_container.value.size(), 18 );
 }
 
 
