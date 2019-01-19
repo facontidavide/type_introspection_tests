@@ -241,6 +241,7 @@ TEST(BuildROSTypeMapFromDefinition,  IMUparsing )
         Definition<sensor_msgs::Imu >::value());
 
   const ROSMessageInfo* info = parser.getMessageInfo("imu");
+
   const ROSMessage* msg = &info->type_list[0];
   EXPECT_EQ( ("sensor_msgs/Imu"),  msg->type().baseName() );
   EXPECT_EQ( msg->fields().size(),  7);

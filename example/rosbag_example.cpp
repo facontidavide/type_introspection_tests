@@ -3,18 +3,17 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 
-RosIntrospection::Parser parser;
-
+using namespace RosIntrospection;
 
 // usage: pass the name of the file as command line argument
 int main(int argc, char** argv)
 {
-    using namespace RosIntrospection;
-
     if( argc != 2 ){
-        printf("Usage: rosbag_example rosbag_file.bag\n");
+        printf("Usage: pass the name of a file as first argument\n");
         return 1;
     }
+
+    Parser parser;
     rosbag::Bag bag;
 
     try{
@@ -22,8 +21,8 @@ int main(int argc, char** argv)
     }
     catch( rosbag::BagException&  ex)
     {
-        printf("rosbag::open thrown an exception:\n");
-        return 1;
+        printf("rosbag::open thrown an exception: %s\n", ex.what());
+        return -1;
     }
 
     // this  rosbag::View will accept ALL the messages
@@ -64,6 +63,9 @@ int main(int argc, char** argv)
         parser.deserializeIntoFlatContainer( topic_name,
                                              absl::Span<uint8_t>(buffer),
                                              &flat_container, 100 );
+        // applyNameTransform will convert  flat_container.value into renamed_values
+        // using, if previously registered, some "rules".
+        // This particular example doesn't use any rule.
         parser.applyNameTransform( topic_name,
                                    flat_container,
                                    &renamed_values );
@@ -83,6 +85,5 @@ int main(int argc, char** argv)
             printf(" %s = %s\n", key.c_str(), value.c_str() );
         }
     }
-
     return 0;
 }

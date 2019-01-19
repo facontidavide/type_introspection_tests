@@ -76,12 +76,17 @@ if (benchmark_FOUND)
 
 endif(benchmark_FOUND)
 
+add_executable(simple_example          example/simple.cpp)
+target_link_libraries(simple_example   ${catkin_LIBRARIES})
+
 add_executable(rosbag_example          example/rosbag_example.cpp)
 target_link_libraries(rosbag_example   ${catkin_LIBRARIES})
 
-add_executable(subscribe_example        example/subscribe_example.cpp)
+add_executable(generic_subscriber        example/generic_subscriber.cpp)
 target_link_libraries(subscribe_example ${catkin_LIBRARIES})
 
+add_executable(multi_subscriber        example/multi_subscriber.cpp)
+target_link_libraries(multi_subscriber ${catkin_LIBRARIES})
 
 #############
 ## Install ##
