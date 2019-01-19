@@ -83,7 +83,7 @@ add_executable(rosbag_example          example/rosbag_example.cpp)
 target_link_libraries(rosbag_example   ${catkin_LIBRARIES})
 
 add_executable(generic_subscriber        example/generic_subscriber.cpp)
-target_link_libraries(subscribe_example ${catkin_LIBRARIES})
+target_link_libraries(generic_subscriber ${catkin_LIBRARIES})
 
 add_executable(multi_subscriber        example/multi_subscriber.cpp)
 target_link_libraries(multi_subscriber ${catkin_LIBRARIES})
