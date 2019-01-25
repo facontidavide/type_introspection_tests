@@ -27,11 +27,6 @@ void DeserializeAndPrint(RosIntrospection::Parser* parser,
                                           absl::Span<uint8_t>(buffer),
                                           &flat_container, 100 );
 
-    RenamedValues renamed_numerical_values;
-    parser->applyNameTransform( topic_name,
-                               flat_container,
-                               &renamed_numerical_values );
-
     for(auto& it: flat_container.value)
     {
         bool value = it.second.convert<int8_t>();
