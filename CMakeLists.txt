@@ -20,6 +20,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 
 add_message_files( FILES
     MotorStatus.msg
+    FrankaError.msg
     )
 
 generate_messages( DEPENDENCIES
@@ -87,6 +88,10 @@ target_link_libraries(generic_subscriber ${catkin_LIBRARIES})
 
 add_executable(multi_subscriber        example/multi_subscriber.cpp)
 target_link_libraries(multi_subscriber ${catkin_LIBRARIES})
+
+add_executable(franka        example/franka.cpp)
+target_link_libraries(franka ${catkin_LIBRARIES})
+
 
 #############
 ## Install ##
