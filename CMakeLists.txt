@@ -39,6 +39,7 @@ generate_messages( DEPENDENCIES
 catkin_package(
     INCLUDE_DIRS
     LIBRARIES
+
     CATKIN_DEPENDS
     ros_type_introspection
     rosbag
@@ -47,6 +48,7 @@ catkin_package(
     sensor_msgs
     geometry_msgs
     message_runtime
+
     DEPENDS
     )
 
@@ -91,14 +93,10 @@ target_link_libraries(multi_subscriber ${catkin_LIBRARIES})
 
 add_executable(franka        example/franka.cpp)
 target_link_libraries(franka ${catkin_LIBRARIES})
+add_dependencies(franka ${catkin_EXPORTED_TARGETS})
 
-
-#############
-## Install ##
-#############
-
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+add_executable(selective_deserialization example/selective_deserialization.cpp)
+target_link_libraries(selective_deserialization ${catkin_LIBRARIES})
 
 
 #############
