@@ -1,7 +1,7 @@
 #include "config.h"
 #include <gtest/gtest.h>
 
-#include "ros_type_introspection/ros_introspection.hpp"
+#include <ros_type_introspection/ros_introspection.hpp>
 #include <sensor_msgs/JointState.h>
 #include <sensor_msgs/NavSatStatus.h>
 #include <sensor_msgs/Imu.h>
@@ -9,6 +9,7 @@
 #include <std_msgs/Int16MultiArray.h>
 
 #include <ros_introspection_test/MotorStatus.h>
+#include <ros_introspection_test/Issue35.h>
 
 using namespace ros::message_traits;
 using namespace RosIntrospection;
@@ -452,8 +453,48 @@ TEST( Deserialize, SensorImage)
                                             absl::Span<uint8_t>(buffer),
                                             &flat_container,100)
         );
-
 }
+
+TEST( Deserialize, Issue35)
+{
+  RosIntrospection::Parser parser;
+
+  using ros_introspection_test::Issue35;
+
+  parser.registerMessageDefinition( "issue35",
+        ROSType(DataType<Issue35>::value()),
+        Definition<Issue35>::value());
+
+  ros::Duration duration (24*60*60);
+
+  Issue35 msg;
+  msg.my_byte = 69;
+  msg.my_char = 42;
+  msg.my_duration = duration;
+
+
+  std::vector<uint8_t> buffer( ros::serialization::serializationLength(msg) );
+  ros::serialization::OStream stream(buffer.data(), buffer.size());
+  ros::serialization::Serializer<Issue35>::write(stream, msg);
+
+  FlatMessage flat_container;
+
+  EXPECT_NO_THROW(
+        parser.deserializeIntoFlatContainer("issue35",
+                                            absl::Span<uint8_t>(buffer),
+                                            &flat_container,100)
+        );
+
+  EXPECT_EQ( flat_container.value[0].second.getTypeID(), BuiltinType::UINT8 );
+  EXPECT_EQ( flat_container.value[0].second.convert<uint8_t>(), 69);
+
+  EXPECT_EQ( flat_container.value[1].second.getTypeID(), BuiltinType::CHAR );
+  EXPECT_EQ( flat_container.value[1].second.convert<uint8_t>(), 42);
+
+  EXPECT_EQ( flat_container.value[2].second.getTypeID(), BuiltinType::DURATION );
+  EXPECT_EQ( flat_container.value[2].second.convert<ros::Duration>(), duration);
+}
+
 
 TEST(Deserialize, MotorStateCustom)
 {
