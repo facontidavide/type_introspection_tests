@@ -7,6 +7,7 @@
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/Image.h>
 #include <std_msgs/Int16MultiArray.h>
+#include <geometry_msgs/PoseStamped.h>
 
 #include <ros_introspection_test/MotorStatus.h>
 
@@ -491,6 +492,60 @@ TEST(Deserialize, MotorStateCustom)
 
     EXPECT_EQ( flat_container.value.size(), 18 );
 }
+
+
+TEST(Deserialize, JointStateExtracSubfield)
+{
+  RosIntrospection::Parser parser;
+
+  parser.registerMessageDefinition(
+        "PoseStamped",
+        ROSType(DataType<geometry_msgs::PoseStamped>::value()),
+        Definition<geometry_msgs::PoseStamped>::value());
+
+  geometry_msgs::PoseStamped pose;
+
+  pose.header.seq = 2016;
+  pose.header.stamp.sec  = 1234;
+  pose.header.stamp.nsec = 567*1000*1000;
+  pose.header.frame_id = "pippo";
+
+  pose.pose.position.x = 1.0;
+  pose.pose.position.y = 2.0;
+  pose.pose.position.z = 3.0;
+
+  pose.pose.orientation.x = 4.0;
+  pose.pose.orientation.y = 5.0;
+  pose.pose.orientation.z = 6.0;
+  pose.pose.orientation.w = 7.0;
+
+  std::vector<uint8_t> buffer( ros::serialization::serializationLength(pose) );
+  ros::serialization::OStream stream(buffer.data(), buffer.size());
+  ros::serialization::Serializer<geometry_msgs::PoseStamped>::write(stream, pose);
+
+  //---------------------------------
+  absl::Span<uint8_t> buffer_view(buffer);
+
+  auto header = parser.extractField<std_msgs::Header>("PoseStamped", buffer_view);
+  auto point  = parser.extractField<geometry_msgs::Point>("PoseStamped", buffer_view);
+  auto quat   = parser.extractField<geometry_msgs::Quaternion>("PoseStamped", buffer_view);
+
+  EXPECT_EQ(header.seq,        pose.header.seq);
+  EXPECT_EQ(header.stamp.sec,  pose.header.stamp.sec);
+  EXPECT_EQ(header.stamp.nsec, pose.header.stamp.nsec);
+  EXPECT_EQ(header.frame_id,   pose.header.frame_id);
+
+  EXPECT_EQ(point.x,  pose.pose.position.x);
+  EXPECT_EQ(point.y,  pose.pose.position.y);
+  EXPECT_EQ(point.z,  pose.pose.position.z);
+
+  EXPECT_EQ(quat.x,  pose.pose.orientation.x);
+  EXPECT_EQ(quat.y,  pose.pose.orientation.y);
+  EXPECT_EQ(quat.z,  pose.pose.orientation.z);
+  EXPECT_EQ(quat.w,  pose.pose.orientation.w);
+}
+
+
 
 
 // Run all the tests that were declared with TEST()
