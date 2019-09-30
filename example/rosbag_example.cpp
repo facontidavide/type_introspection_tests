@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 
         // deserialize and rename the vectors
         parser.deserializeIntoFlatContainer( topic_name,
-                                             absl::Span<uint8_t>(buffer),
+                                             Span<uint8_t>(buffer),
                                              &flat_container, 100 );
         // applyNameTransform will convert  flat_container.value into renamed_values
         // using, if previously registered, some "rules".

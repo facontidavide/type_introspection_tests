@@ -24,7 +24,7 @@ void DeserializeAndPrint(RosIntrospection::Parser* parser,
     using namespace RosIntrospection;
     FlatMessage flat_container;
     parser->deserializeIntoFlatContainer( topic_name,
-                                          absl::Span<uint8_t>(buffer),
+                                          Span<uint8_t>(buffer),
                                           &flat_container, 100 );
 
     for(auto& it: flat_container.value)

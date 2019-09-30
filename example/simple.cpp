@@ -31,7 +31,7 @@ void ParseAndDeserialize(const Message& sample, const std::string& topic_name)
   // It is not meant to be human readable, but it is easy to process...
   FlatMessage flat_container;
   parser.deserializeIntoFlatContainer( topic_name,
-                                       absl::Span<uint8_t>(buffer),
+                                       Span<uint8_t>(buffer),
                                        &flat_container, 100 );
 
   // RenamedValues are key/value pairs where the key is a human

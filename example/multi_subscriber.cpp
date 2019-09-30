@@ -32,7 +32,7 @@ void topicCallback(const topic_tools::ShapeShifter::ConstPtr& msg,
 
 
     // deserialize and rename the vectors
-    parser.deserializeIntoFlatContainer( topic_name, absl::Span<uint8_t>(buffer), &flat_container, 100);
+    parser.deserializeIntoFlatContainer( topic_name, Span<uint8_t>(buffer), &flat_container, 100);
     parser.applyNameTransform( topic_name, flat_container, &renamed_values );
 
     // Print the content of the message

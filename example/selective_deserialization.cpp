@@ -39,14 +39,14 @@ int main(int argc, char **argv)
     std_msgs::Header header;
 
     const RosIntrospection::Parser::VisitingCallback modifyTimestamp =
-            [&header](const RosIntrospection::ROSType&, absl::Span<uint8_t>& buffer)
+            [&header](const RosIntrospection::ROSType&, Span<uint8_t>& buffer)
     {
         ros::serialization::IStream is( buffer.data(), buffer.size() );
         ros::serialization::deserialize(is, header);
     };
 
     const RosIntrospection::ROSType header_type( ros::message_traits::DataType<std_msgs::Header>::value() ) ;
-    absl::Span<uint8_t> buffer_span(raw_buffer);
+    Span<uint8_t> buffer_span(raw_buffer);
     parser.applyVisitorToBuffer(topic_name, header_type, buffer_span,  modifyTimestamp );
 
     std::cout << "Seq: "   << header.seq << std::endl;

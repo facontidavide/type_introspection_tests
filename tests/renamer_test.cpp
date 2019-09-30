@@ -148,7 +148,7 @@ TEST(Renamer2, DeserializeJointStateAndRename)
   FlatMessage flat_container;
   RenamedValues renamed_value;
 
-  parser.deserializeIntoFlatContainer("JointState",  absl::Span<uint8_t>(buffer),  &flat_container,100);
+  parser.deserializeIntoFlatContainer("JointState",  Span<uint8_t>(buffer),  &flat_container,100);
   parser.applyNameTransform("JointState",  flat_container, &renamed_value);
 
   if(VERBOSE_TEST)
